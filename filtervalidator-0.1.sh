@@ -62,6 +62,8 @@ LINES=$(cat /jffs/scripts/filter.txt | wc -l) >/dev/null 2>&1
 
 if [ $LINES -eq 0 ]; then
   printf "${CRed}\r[Invalid Filter List...Exiting]"
+  echo ""
+  echo ""
   exit 0
 else
   printf "${CGreen}\r[Checking Filter List Contents]...OK"
