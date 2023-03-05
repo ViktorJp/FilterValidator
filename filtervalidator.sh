@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # -------------------------------------------------------------------------------------------------------------------------
-# About Filter Validator v0.1 - by Viktor Jaep, 2023
+# About Filter Validator v0.2 - by Viktor Jaep, SomewhereOverTheRainbow 2023
 # -------------------------------------------------------------------------------------------------------------------------
 # Filter Validator tests the IPv4 addresses (and IPv6 if present) on a given filter list that are to be used with the
 # Skynet Firewall on Asus-Merlin Firmware in order to block incoming/outgoing IPs. This script arose out of the need to
@@ -36,7 +36,8 @@ echo -e "${CYellow}"
 echo -e "   _____ ____            _   __     ___    __     __          "
 echo -e "  / __(_) / /____ ____  | | / /__ _/ (_)__/ /__ _/ /____  ____"
 echo -e " / _// / / __/ -_) __/  | |/ / _ '/ / / _  / _ '/ __/ _ \/ __/"
-echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.1"
+echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.2"
+echo -e "By @Viktor Jaep and @SomewhereOverTheRainbow"
 echo ""
 echo -e "${CCyan}Filter Validator was designed to run through your Skynet filter lists to determine"
 echo -e "if all IP addresses fall within their normal ranges. Should any entries not follow"
@@ -45,9 +46,20 @@ echo -e "these filter sets will cause the Skynet firewall to malfunction due to 
 echo -e "that are not filtering out bad IPs, causing a loss of blocked IPs and ranges to occur."
 echo ""
 echo -e "Please enter a valid filter list URL, or hit <ENTER> to use example below:"
-echo -e "${CClear}Example: https://raw.githubusercontent.com/ViktorJp/Skynet/main/filter.list"
+echo -e "${CClear}Example 1: https://raw.githubusercontent.com/ViktorJp/Skynet/main/filter.list"
+echo -e "Example 2: https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"
+echo ""
 read -p 'URL: ' filterlist1
-if [ -z "$filterlist1" ]; then filterlist="https://raw.githubusercontent.com/ViktorJp/Skynet/main/filter.list"; else filterlist=$filterlist1; fi
+  if [ -z "$filterlist1" ]; then 
+    RANDOM=$(awk 'BEGIN {srand(); print int(32768 * rand())}')
+    R_NUM=$(( RANDOM % 3 ))
+    if [ $R_NUM -eq 0 ]; then R_NUM=1; fi
+    if [ $R_NUM -eq 1 ]; then filterlist="https://raw.githubusercontent.com/ViktorJp/Skynet/main/filter.list"; fi
+    if [ $R_NUM -eq 2 ]; then filterlist="https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"; fi
+    if [ $R_NUM -eq 3 ]; then filterlist="https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"; fi
+  else 
+    filterlist=$filterlist1
+  fi
 echo ""
 echo -e "${CGreen}Testing against: $filterlist${CClear}"
 echo ""
