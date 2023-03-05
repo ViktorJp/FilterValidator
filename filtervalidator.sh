@@ -74,7 +74,7 @@ listcount=0
 while [ $listcount -ne $LINES ]; do
   listcount=$(($listcount+1))
 
-  blacklisturl=$(cat /jffs/scripts/filter.txt | sed -n $listcount'p' | grep "^[^#;]" | grep "\s*$") 2>&1
+  blacklisturl=$(cat /jffs/scripts/filter.txt | sed -n $listcount'p') 2>&1
 
   if [ -z $blacklisturl ]; then break; fi
 
