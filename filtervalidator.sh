@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # -------------------------------------------------------------------------------------------------------------------------
-# About Filter Validator v0.3 - by Viktor Jaep & SomewhereOverTheRainbow 2023
+# About Filter Validator v0.4 - by Viktor Jaep & SomewhereOverTheRainbow 2023
 # -------------------------------------------------------------------------------------------------------------------------
 # Filter Validator tests the IPv4 addresses (and IPv6 if present) on a given filter list that are to be used with the
 # Skynet Firewall on Asus-Merlin Firmware in order to block incoming/outgoing IPs. This script arose out of the need to
@@ -36,7 +36,7 @@ echo -e "${CYellow}"
 echo -e "   _____ ____            _   __     ___    __     __          "
 echo -e "  / __(_) / /____ ____  | | / /__ _/ (_)__/ /__ _/ /____  ____"
 echo -e " / _// / / __/ -_) __/  | |/ / _ '/ / / _  / _ '/ __/ _ \/ __/"
-echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.3"
+echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.4"
 echo -e "        By @Viktor Jaep and @SomewhereOverTheRainbow"
 echo ""
 echo -e "${CCyan}Filter Validator was designed to run through your Skynet filter lists to determine"
@@ -83,14 +83,15 @@ fi
 
 echo -e "${CClear}\n"
 
-
+blvalid=0
+blprobs=0
 listcount=0
 while [ $listcount -ne $LINES ]; do
   listcount=$(($listcount+1))
 
-  blacklisturl=$(cat /jffs/scripts/filter.txt | grep -v '^\s*$\|^\s*\#' | sed -n $listcount'p') 2>&1
+  blacklisturl=$(cat /jffs/scripts/filter.txt | grep -vE '^[[:space:]]*#' | sed -n $listcount'p') 2>&1
 
-  if [ -z $blacklisturl ]; then break; fi
+  if [ -z $blacklisturl ]; then continue; fi
 
   echo "Checking $blacklisturl"
 
@@ -100,12 +101,19 @@ while [ $listcount -ne $LINES ]; do
     echo -e "Invalid IPs:${CRed}"
     echo $ipresults
     echo -e "${CClear}"
+    blprobs=$(($blprobs+1))
   else
     echo -e "${CGreen}[Valid]${CClear}"
     echo ""
+    blvalid=$(($blvalid+1))
   fi
 
 done
+
+echo -e "---------------------------------------------"
+echo -e "${CGreen}[Valid List Entries]: $blvalid"
+echo -e "${CRed}[Invalid List Entries]: $blprobs${CClear}"
+echo ""
 
 #cleanup
 rm -f /jffs/scripts/filter.txt
