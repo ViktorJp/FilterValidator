@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # -------------------------------------------------------------------------------------------------------------------------
-# About Filter Validator v0.2 - by Viktor Jaep, SomewhereOverTheRainbow 2023
+# About Filter Validator v0.3 - by Viktor Jaep & SomewhereOverTheRainbow 2023
 # -------------------------------------------------------------------------------------------------------------------------
 # Filter Validator tests the IPv4 addresses (and IPv6 if present) on a given filter list that are to be used with the
 # Skynet Firewall on Asus-Merlin Firmware in order to block incoming/outgoing IPs. This script arose out of the need to
@@ -36,7 +36,7 @@ echo -e "${CYellow}"
 echo -e "   _____ ____            _   __     ___    __     __          "
 echo -e "  / __(_) / /____ ____  | | / /__ _/ (_)__/ /__ _/ /____  ____"
 echo -e " / _// / / __/ -_) __/  | |/ / _ '/ / / _  / _ '/ __/ _ \/ __/"
-echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.2"
+echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.3"
 echo -e "        By @Viktor Jaep and @SomewhereOverTheRainbow"
 echo ""
 echo -e "${CCyan}Filter Validator was designed to run through your Skynet filter lists to determine"
@@ -50,14 +50,14 @@ echo -e "${CClear}Example 1: https://raw.githubusercontent.com/ViktorJp/Skynet/m
 echo -e "Example 2: https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"
 echo ""
 read -p 'URL: ' filterlist1
-  if [ -z "$filterlist1" ]; then 
+  if [ -z "$filterlist1" ]; then
     RANDOM=$(awk 'BEGIN {srand(); print int(32768 * rand())}')
     R_NUM=$(( RANDOM % 3 ))
     if [ $R_NUM -eq 0 ]; then R_NUM=1; fi
     if [ $R_NUM -eq 1 ]; then filterlist="https://raw.githubusercontent.com/ViktorJp/Skynet/main/filter.list"; fi
     if [ $R_NUM -eq 2 ]; then filterlist="https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"; fi
     if [ $R_NUM -eq 3 ]; then filterlist="https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"; fi
-  else 
+  else
     filterlist=$filterlist1
   fi
 echo ""
@@ -94,7 +94,7 @@ while [ $listcount -ne $LINES ]; do
 
   echo "Checking $blacklisturl"
 
-  ipresults=$(curl --silent --retry 3 --request GET --url $blacklisturl | grep "^[^#;]" | grep "\s*$" | grep -E -v "(\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b)|(^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b)" | grep -E -v "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))")
+  ipresults=$(curl --silent --retry 3 --request GET --url $blacklisturl | grep -v '^\s*$\|^\s*\#' | awk '!/^((((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])\.){3}(25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\/(1?[0-9]|2?[0-9]|3?[0-2]))?))|((([0-9A-f]{0,4}:){1,7}[0-9A-f]{0,4}:?(\/(1?[0-2][0-8]|[0-9][0-9]))?))$/{print $1}')
 
   if [ ! -z $ipresults ]; then
     echo -e "Invalid IPs:${CRed}"
