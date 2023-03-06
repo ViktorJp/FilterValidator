@@ -94,7 +94,7 @@ while [ $listcount -ne $LINES ]; do
 
   echo "Checking $blacklisturl"
 
-  ipresults=$(curl --silent --retry 3 --request GET --url $blacklisturl | grep -v '^\s*$\|^\s*\#' | awk '!/^((((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])\.){3}(25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\/(1?[0-9]|2?[0-9]|3?[0-2]))?))|((([0-9A-f]{0,4}:){1,7}[0-9A-f]{0,4}:?(\/(1?[0-2][0-8]|[0-9][0-9]))?))$/{print $1}')
+  ipresults=$(curl --silent --retry 3 --request GET --url $blacklisturl | awk '!/^((((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])\.){3}(25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\/(1?[0-9]|2?[0-9]|3?[0-2]))?))|((([0-9A-f]{0,4}:){1,7}[0-9A-f]{0,4}:?(\/(1?[0-2][0-8]|[0-9][0-9]))?))$/{if($1 !~ /^[[:space:]]*#/)print $1}')
 
   if [ ! -z $ipresults ]; then
     echo -e "Invalid IPs:${CRed}"
