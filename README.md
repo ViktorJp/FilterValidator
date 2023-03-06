@@ -1,4 +1,4 @@
-# FilterValidator v0.2
+# FilterValidator v0.3
 Asus-Merlin Skynet Firewall Filter Validator
 
 Filter Validator tests the IPv4 addresses (and IPv6 if present) on a given filter list that are to be used with the Skynet Firewall on Asus-Merlin Firmware in order to block incoming/outgoing IPs. This script arose out of the need to determine exactly which blacklist URL contained an invalid IP that was causing our Skynet firewalls to fail importing the correct IP sets due to an invalid IP somewhere on these lists.
