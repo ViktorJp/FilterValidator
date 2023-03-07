@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # -------------------------------------------------------------------------------------------------------------------------
-# About Filter Validator v0.4 - by Viktor Jaep & SomewhereOverTheRainbow 2023
+# About Filter Validator v0.5 - by Viktor Jaep & SomewhereOverTheRainbow 2023
 # -------------------------------------------------------------------------------------------------------------------------
 # Filter Validator tests the IPv4 addresses (and IPv6 if present) on a given filter list that are to be used with the
 # Skynet Firewall on Asus-Merlin Firmware in order to block incoming/outgoing IPs. This script arose out of the need to
@@ -36,7 +36,7 @@ echo -e "${CYellow}"
 echo -e "   _____ ____            _   __     ___    __     __          "
 echo -e "  / __(_) / /____ ____  | | / /__ _/ (_)__/ /__ _/ /____  ____"
 echo -e " / _// / / __/ -_) __/  | |/ / _ '/ / / _  / _ '/ __/ _ \/ __/"
-echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.4"
+echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.5"
 echo -e "        By @Viktor Jaep and @SomewhereOverTheRainbow"
 echo ""
 echo -e "${CCyan}Filter Validator was designed to run through your Skynet filter lists to"
@@ -71,9 +71,9 @@ curl --silent --retry 3 --request GET --url $filterlist > /jffs/scripts/filter.t
 printf "\r[Downloading Filter List]...OK"
 printf "\n[Checking Filter List Contents]"
 
-LINES=$(cat /jffs/scripts/filter.txt | wc -l) >/dev/null 2>&1
+LINES=$(sed -n '$=' /jffs/scripts/filter.txt) >/dev/null 2>&1
 
-if [ $LINES -eq 0 ]; then
+if [ -z "$LINES" ]; then
   printf "${CRed}\r[Invalid Filter List...Exiting]"
   echo ""
   echo ""
@@ -86,11 +86,9 @@ echo -e "${CClear}\n"
 
 blvalid=0
 blprobs=0
-listcount=0
-while [ $listcount -ne $LINES ]; do
-  listcount=$(($listcount+1))
+for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}'); do
 
-  blacklisturl=$(cat /jffs/scripts/filter.txt | grep -vE '^[[:space:]]*#' | sed -n $listcount'p') 2>&1
+  blacklisturl=$(grep -vE '^[[:space:]]*#' /jffs/scripts/filter.txt | sed -n $listcount'p') 2>&1
 
   if [ -z $blacklisturl ]; then continue; fi
 
