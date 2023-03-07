@@ -52,8 +52,10 @@ echo -e "${CClear}Example 1: https://raw.githubusercontent.com/ViktorJp/Skynet/m
 echo -e "Example 2: https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"
 echo ""
 read -p 'URL: ' filterlist1
-  #Test START
+
+  #Pre-processing START
   read up rest </proc/uptime; init_start="${up%.*}${up#*.}"
+
   #Read in the specific URL, or randomly choose between 2 preconfigured URLs
   if [ -z "$filterlist1" ]; then
     RANDOM=$(awk 'BEGIN {srand(); print int(32768 * rand())}')
@@ -90,20 +92,26 @@ if [ -z "$LINES" ]; then
 else
   printf "${CGreen}\r[Checking Filter List Contents]...OK"
 fi
-#Test END
+
+#Pre-processing END
 read up rest </proc/uptime; init_end="${up%.*}${up#*.}"
-#Test RUNTIME
+
+#Pre-processing RUNTIME
 init_runtime="$((10*(init_end-init_start)))"
-echo -e "${CClear}\n"
-echo -e "[Test Runtime]: $init_runtime milliseconds or $(printf $init_runtime | awk 'NF{print $1/1000}' OFMT="%.3f") seconds\n"
+
+echo -e "\n${CClear}[Pre-processing Runtime]: $init_runtime ms or $(printf $init_runtime | awk 'NF{print $1/1000}' OFMT="%.3f") sec${CClear}"
+echo ""
+echo -e "--------------------------------------------------------------------------"
 echo ""
 
 #Loop through the rows of the filter list
 blvalid=0
 blprobs=0
 for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}'); do
+  
   #Operations START
   read up rest </proc/uptime; start="${up%.*}${up#*.}"
+
   #Grab the next URL in the filter list
   blacklisturl=$(grep -vE '^[[:space:]]*#' /jffs/scripts/filter.txt | sed -n $listcount'p') 2>&1
 
@@ -128,28 +136,34 @@ for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}
     echo -e "${CClear}"
     blprobs=$(($blprobs+1))
   else
-    echo -e "${CGreen}[Valid]${CClear} [Entries:$BLLINES]"
+    echo -en "${CGreen}[Valid]${CClear} [Entries: $BLLINES] "
     blvalid=$(($blvalid+1))
     blitems=$(($blitems+$BLLINES))
   fi
+
   #cleanup
   rm -f /jffs/scripts/fltcontents.txt
+
   #Operations END
   read up rest </proc/uptime; end="${up%.*}${up#*.}"
-  echo -e "[Operational Runtime]: $((10*(end-start))) milliseconds or $(printf $((10*(end-start))) | awk 'NF{print $1/1000}' OFMT="%.3f") seconds"
+  printf "[Processing Time: $((10*(end-start))) ms or $(printf $((10*(end-start))) | awk 'NF{print $1/1000}' OFMT="%.3f") sec]\n"
   echo ""
+  
   #Operational RUNTIME
   [ -z "$final_runtime" ] && final_runtime="$((10*(end-start)))" || final_runtime="$((final_runtime+(10*(end-start))))"
   unset start end
+
 done
+
 #Total RUNTIME
 runtime="$((final_runtime+init_runtime))"
+
 #Display a summary
-echo -e "---------------------------------------------"
+echo -e "--------------------------------------------------------------------------"
 echo -e "${CGreen}[Valid List Entries]: $blvalid"
 echo -e "${CRed}[Invalid List Entries]: $blprobs${CClear}"
 echo -e "[Total Items Checked]: $blitems"
-echo -e "[Total Runtime]: $runtime milliseconds or $(printf $runtime | awk 'NF{print $1/1000}' OFMT="%.3f") seconds"
+echo -e "[Total Processing Runtime]: $runtime ms or $(printf $runtime | awk 'NF{print $1/1000}' OFMT="%.3f") sec"
 
 echo ""
 
