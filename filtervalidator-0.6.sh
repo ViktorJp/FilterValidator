@@ -52,7 +52,7 @@ echo -e "${CClear}Example 1: https://raw.githubusercontent.com/ViktorJp/Skynet/m
 echo -e "Example 2: https://raw.githubusercontent.com/jumpsmm7/GeneratedAdblock/master/filter.list"
 echo ""
 read -p 'URL: ' filterlist1
-  # Test Start
+  #Test START
   read up rest </proc/uptime; init_start="${up%.*}${up#*.}"
   #Read in the specific URL, or randomly choose between 2 preconfigured URLs
   if [ -z "$filterlist1" ]; then
@@ -90,9 +90,9 @@ if [ -z "$LINES" ]; then
 else
   printf "${CGreen}\r[Checking Filter List Contents]...OK"
 fi
-# Test END
+#Test END
 read up rest </proc/uptime; init_end="${up%.*}${up#*.}"
-# Test Runtime
+#Test RUNTIME
 init_runtime="$((10*(init_end-init_start)))"
 echo -e "${CClear}\n"
 echo -e "[Test Runtime]: $init_runtime milliseconds or $(printf $init_runtime | awk 'NF{print $1/1000}' OFMT="%.3f") seconds\n"
@@ -102,7 +102,7 @@ echo ""
 blvalid=0
 blprobs=0
 for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}'); do
-  # Operations START
+  #Operations START
   read up rest </proc/uptime; start="${up%.*}${up#*.}"
   #Grab the next URL in the filter list
   blacklisturl=$(grep -vE '^[[:space:]]*#' /jffs/scripts/filter.txt | sed -n $listcount'p') 2>&1
@@ -134,15 +134,15 @@ for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}
   fi
   #cleanup
   rm -f /jffs/scripts/fltcontents.txt
-  # Operations END
+  #Operations END
   read up rest </proc/uptime; end="${up%.*}${up#*.}"
   echo -e "[Operational Runtime]: $((10*(end-start))) milliseconds or $(printf $((10*(end-start))) | awk 'NF{print $1/1000}' OFMT="%.3f") seconds"
   echo ""
-  # Operational Runtime
+  #Operational RUNTIME
   [ -z "$final_runtime" ] && final_runtime="$((10*(end-start)))" || final_runtime="$((final_runtime+(10*(end-start))))"
   unset start end
 done
-#Total Runtime
+#Total RUNTIME
 runtime="$((final_runtime+init_runtime))"
 #Display a summary
 echo -e "---------------------------------------------"
