@@ -162,8 +162,8 @@ runtime="$((final_runtime+init_runtime))"
 
 #Display a summary
 echo -e "--------------------------------------------------------------------------"
-echo -e "${CGreen}[Valid List Entries]: $blvalid"
-echo -e "${CRed}[Invalid List Entries]: $blprobs${CClear}"
+echo -e "${CGreen}[Valid Lists]: $blvalid"
+echo -e "${CRed}[Invalid Lists]: $blprobs${CClear}"
 echo -e "[Total Items Checked]: $blitems"
 echo -e "[Total Processing Runtime]: $runtime ms or $(printf $runtime | awk 'NF{print $1/1000}' OFMT="%.3f") sec"
 
