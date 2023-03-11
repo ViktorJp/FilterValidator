@@ -126,6 +126,8 @@ for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}
   #Filter and determine the number of entries in the specific URL filter list
   BLLINES=$(grep -cvE '^[[:space:]]*#' /jffs/scripts/fltcontents.txt) >/dev/null 2>&1
 
+  if [ $BLLINES -eq 0 ]; then echo -e "${CRed}[Invalid List]${CClear} [Entries: $BLLINES]"; echo ""; blprobs=$(($blprobs+1)); continue; fi
+
   #Determine if there are any invalid entries in the list
   ipresults=$(awk '!/^((((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])\.){3}(25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\/(1?[0-9]|2?[0-9]|3?[0-2]))?))|((([0-9A-f]{0,4}:){1,7}[0-9A-f]{0,4}:?(\/(1?[0-2][0-8]|[0-9][0-9]))?))$/{if($1 !~ /^[[:space:]]*#/)print $1}' /jffs/scripts/fltcontents.txt)
 
