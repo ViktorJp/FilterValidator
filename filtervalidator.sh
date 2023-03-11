@@ -133,7 +133,7 @@ for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}
 
   #Display valid or invalid results
   if [ ! -z $ipresults ]; then
-    echo -e "Invalid IPs:${CRed}"
+    echo -e "${CRed}[Invalid IPs Detected]"
     echo $ipresults
     echo -e "${CClear}"
     blprobs=$(($blprobs+1))
