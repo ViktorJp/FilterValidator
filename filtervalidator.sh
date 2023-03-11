@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # -------------------------------------------------------------------------------------------------------------------------
-# About Filter Validator v0.6 - by Viktor Jaep & SomewhereOverTheRainbow 2023
+# About Filter Validator v0.7 - by Viktor Jaep & SomewhereOverTheRainbow 2023
 # -------------------------------------------------------------------------------------------------------------------------
 # Filter Validator tests the IPv4 addresses (and IPv6 if present) on a given filter list that are to be used with the
 # Skynet Firewall on Asus-Merlin Firmware in order to block incoming/outgoing IPs. This script arose out of the need to
-# determine exactly which blacklist URL contained an invalid IP that was causing our Skynet firewalls fail importing the
-# correct IP sets due to an invalid IP somewhere on these lists.
+# determine exactly which blacklist URL contained an invalid IP that was causing our Skynet firewalls (prior to v7.3.6)
+# fail importing the correct IP sets due to an invalid IP somewhere on these lists.
 
 # -------------------------------------------------------------------------------------------------------------------------
 # Usage Guide
@@ -37,15 +37,15 @@ echo -e "${CYellow}"
 echo -e "   _____ ____            _   __     ___    __     __          "
 echo -e "  / __(_) / /____ ____  | | / /__ _/ (_)__/ /__ _/ /____  ____"
 echo -e " / _// / / __/ -_) __/  | |/ / _ '/ / / _  / _ '/ __/ _ \/ __/"
-echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.6"
+echo -e "/_/ /_/_/\__/\__/_/     |___/\_,_/_/_/\_,_/\_,_/\__/\___/_/   v0.7"
 echo -e "        By @Viktor Jaep and @SomewhereOverTheRainbow"
 echo ""
 echo -e "${CCyan}Filter Validator was designed to run through your Skynet filter lists to"
 echo -e "determine if all IP addresses fall within their normal ranges. Should any"
 echo -e "entries not follow standard IP rules, they will be identified below. ${CRed}NOTE:"
 echo -e "Having invalid IPs within these filter sets will cause the Skynet firewall"
-echo -e "to malfunction due to regex issues that fail to filter out bad IPs, causing"
-echo -e "a loss of blocked IPs and ranges."
+echo -e "(prior to v7.3.6) to malfunction due to regex issues that fail to filter"
+echo -e "out bad IPs, causing a loss of blocked IPs and ranges."
 echo ""
 echo -e "${CCyan}Please enter a valid filter list URL, or hit <ENTER> to use example below:"
 echo -e "${CClear}Example 1: https://raw.githubusercontent.com/ViktorJp/Skynet/main/filter.list"
@@ -108,7 +108,7 @@ echo ""
 blvalid=0
 blprobs=0
 for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}'); do
-  
+
   #Operations START
   read up rest </proc/uptime; start="${up%.*}${up#*.}"
 
@@ -148,7 +148,7 @@ for listcount in $(sed -n '=' /jffs/scripts/filter.txt | awk '{printf "%s ", $1}
   read up rest </proc/uptime; end="${up%.*}${up#*.}"
   printf "[Processing Time: $((10*(end-start))) ms or $(printf $((10*(end-start))) | awk 'NF{print $1/1000}' OFMT="%.3f") sec]\n"
   echo ""
-  
+
   #Operational RUNTIME
   [ -z "$final_runtime" ] && final_runtime="$((10*(end-start)))" || final_runtime="$((final_runtime+(10*(end-start))))"
   unset start end
